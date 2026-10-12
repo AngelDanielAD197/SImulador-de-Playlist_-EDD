@@ -10,10 +10,12 @@ body {
   color: #e2e8f0;
   display: flex;
   justify-content: center;
-  padding: 16px;
+  align-items: flex-start;
+  padding: 24px;
   min-height: 100vh;
 }
 
+/* Contenedor Adaptable (Mobile-first, se expande en Desktop) */
 .app-container {
   width: 100%;
   max-width: 480px;
@@ -22,47 +24,64 @@ body {
   gap: 16px;
 }
 
+/* MEDIA QUERY PARA COMPUTADORAS (Pantallas mayores a 900px) */
+@media (min-width: 900px) {
+  .app-container {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+  }
+
+  /* El header abarca todo el ancho arriba */
+  .header-card {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Estilos comunes de tarjetas */
+.header-card, .player-card, .data-panel-card, .playlist-card {
+  background: rgba(18, 22, 31, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
 /* Header */
 .header-card {
-  background: rgba(18, 22, 31, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 12px 16px;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  backdrop-filter: blur(10px);
+  gap: 14px;
 }
 
 .avatar-circle {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: linear-gradient(135deg, #00f2fe, #4facfe);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .header-info h1 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: #ffffff;
 }
 
 .status-online {
-  font-size: 11px;
+  font-size: 12px;
   color: #00f2fe;
 }
 
 /* Reproductor Principal */
 .player-card {
-  background: rgba(18, 22, 31, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .player-cover {
@@ -153,10 +172,7 @@ body {
 
 /* Panel de Lógica / DataFest */
 .data-panel-card {
-  background: rgba(18, 22, 31, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 16px;
+  padding: 18px;
 }
 
 .data-panel-card h3 {
@@ -173,7 +189,7 @@ body {
 
 .friend-box {
   background: rgba(255, 255, 255, 0.03);
-  padding: 10px;
+  padding: 12px;
   border-radius: 12px;
 }
 
@@ -194,11 +210,16 @@ body {
   background: #1e293b;
   border: 1px solid #334155;
   color: #64748b;
-  padding: 4px 10px;
+  padding: 5px 10px;
   border-radius: 12px;
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chip:hover {
+  border-color: #00f2fe;
 }
 
 .chip.active {
@@ -222,7 +243,7 @@ body {
 
 .btn-intersect {
   width: 100%;
-  padding: 10px;
+  padding: 11px;
   border-radius: 12px;
   border: none;
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
@@ -230,35 +251,47 @@ body {
   font-weight: 700;
   font-size: 12px;
   cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-intersect:hover {
+  opacity: 0.9;
 }
 
 .result-badge {
   background: rgba(139, 92, 246, 0.15);
   border: 1px solid rgba(139, 92, 246, 0.4);
-  padding: 8px 12px;
+  padding: 9px 12px;
   border-radius: 10px;
   font-size: 12px;
   text-align: center;
   color: #c084fc;
 }
 
-/* Lista de Pistas */
+/* Lista de Pistas (En desktop toma toda la columna derecha y permite scroll propio si es largo) */
 .playlist-card {
-  background: rgba(18, 22, 31, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  .playlist-card {
+    grid-column: 2;
+    grid-row: 2;
+    max-height: calc(100vh - 140px);
+  }
 }
 
 .playlist-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .playlist-header h3 {
-  font-size: 13px;
+  font-size: 14px;
   color: #00f2fe;
 }
 
@@ -275,13 +308,25 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-y: auto;
+  max-height: 520px;
+  padding-right: 4px;
+}
+
+/* Estilo de scroll limpio tipo Spotify */
+.pistas-list::-webkit-scrollbar {
+  width: 6px;
+}
+.pistas-list::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
 }
 
 .pista-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 14px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 12px;
@@ -298,12 +343,18 @@ body {
   font-size: 12px;
   font-weight: bold;
   color: #b06ab3;
-  width: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.pista-info {
+  flex: 1;
 }
 
 .pista-info h4 {
   font-size: 13px;
   color: #fff;
+  margin-bottom: 2px;
 }
 
 .pista-info p {
