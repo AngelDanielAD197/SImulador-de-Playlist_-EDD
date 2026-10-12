@@ -15,7 +15,7 @@ body {
   min-height: 100vh;
 }
 
-/* Contenedor Adaptable (Mobile-first, se expande en Desktop) */
+/* Contenedor Base (Móvil) */
 .app-container {
   width: 100%;
   max-width: 480px;
@@ -24,19 +24,21 @@ body {
   gap: 16px;
 }
 
-/* MEDIA QUERY PARA COMPUTADORAS (Pantallas mayores a 900px) */
+/* ==========================================
+   DISEÑO PARA COMPUTADORAS (Escritorio)
+   ========================================== */
 @media (min-width: 900px) {
   .app-container {
-    max-width: 1100px;
+    max-width: 1200px;
     display: grid;
-    grid-template-columns: 420px 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 440px 1fr; /* Columna izquierda fija, derecha flexible */
     gap: 20px;
+    align-items: start;
   }
 
-  /* El header abarca todo el ancho arriba */
+  /* Agrupamos la columna izquierda en un contenedor virtual o grid span */
   .header-card {
-    grid-column: 1 / -1;
+    grid-column: 1;
   }
 }
 
@@ -268,7 +270,7 @@ body {
   color: #c084fc;
 }
 
-/* Lista de Pistas (En desktop toma toda la columna derecha y permite scroll propio si es largo) */
+/* Lista de Pistas (En Desktop se posiciona limpiamente en la columna derecha) */
 .playlist-card {
   padding: 20px;
   display: flex;
@@ -278,8 +280,8 @@ body {
 @media (min-width: 900px) {
   .playlist-card {
     grid-column: 2;
-    grid-row: 2;
-    max-height: calc(100vh - 140px);
+    grid-row: 1 / span 4; /* Ocupa toda la altura de la columna derecha */
+    height: calc(100vh - 48px);
   }
 }
 
@@ -309,11 +311,10 @@ body {
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
-  max-height: 520px;
+  max-height: calc(100vh - 140px);
   padding-right: 4px;
 }
 
-/* Estilo de scroll limpio tipo Spotify */
 .pistas-list::-webkit-scrollbar {
   width: 6px;
 }
