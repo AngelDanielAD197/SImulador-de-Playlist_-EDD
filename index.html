@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataFest • Simulador de Playlists</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- ENCABEZADO TERMINAL / DATAFEST -->
+    <header class="header-card">
+      <div class="avatar-circle">🎵</div>
+      <div class="header-info">
+        <h1>DataFest • Playlist Engine</h1>
+        <p class="status-online">● Sistema de Intersección de Conjuntos v2.0</p>
+      </div>
+    </header>
+
+    <!-- TARJETA REPRODUCTOR MULTIMEDIA -->
+    <section class="player-card">
+      <div class="player-cover">
+        <div class="cover-overlay"></div>
+        <button class="btn-toggle-visual" id="btnToggleVisual">👁️ Ocultar Visual</button>
+        <div class="now-playing-details">
+          <h2 id="currentTitle">All The Way Live</h2>
+          <p id="currentArtist">Metro Boomin, Future, Lil Uzi Vert</p>
+        </div>
+      </div>
+
+      <div class="player-controls">
+        <div class="progress-bar-container">
+          <span id="currentTime">0:00</span>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <span id="totalTime">4:05</span>
+        </div>
+        <div class="control-buttons">
+          <button class="btn-ctrl" id="btnPrev">⏮️</button>
+          <button class="btn-play" id="btnPlay">▶️</button>
+          <button class="btn-ctrl" id="btnNext">⏭️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL DE LOGICA Y CONJUNTOS (DATA FEST) -->
+    <section class="data-panel-card">
+      <h3>⚡ Filtro de Preferencias (Conjuntos de Bits)</h3>
+      
+      <div class="friends-selectors">
+        <!-- Amigo 1 -->
+        <div class="friend-box">
+          <h4>Pref. Amigo 1</h4>
+          <div class="genres-toggle-group" id="genresAmigo1">
+            <button class="chip active" data-bit="0">ROCK</button>
+            <button class="chip active" data-bit="1">POP</button>
+            <button class="chip" data-bit="2">JAZZ</button>
+            <button class="chip" data-bit="3">ELEC</button>
+            <button class="chip" data-bit="4">REGG</button>
+          </div>
+          <div class="bit-vector-display" id="vectorAmigo1">[ 1, 1, 0, 0, 0 ]</div>
+        </div>
+
+        <!-- Amigo 2 -->
+        <div class="friend-box">
+          <h4>Pref. Amigo 2</h4>
+          <div class="genres-toggle-group" id="genresAmigo2">
+            <button class="chip" data-bit="0">ROCK</button>
+            <button class="chip active" data-bit="1">POP</button>
+            <button class="chip active" data-bit="2">JAZZ</button>
+            <button class="chip active" data-bit="3">ELEC</button>
+            <button class="chip" data-bit="4">REGG</button>
+          </div>
+          <div class="bit-vector-display" id="vectorAmigo2">[ 0, 1, 1, 1, 0 ]</div>
+        </div>
+      </div>
+
+      <!-- BOTON INTERSECCION Y RESULTADO -->
+      <div class="intersection-action">
+        <button class="btn-intersect" id="btnIntersect">⚡ Ejecutar Intersección (*)</button>
+        <div class="result-badge" id="resultGenres">
+          Géneros en común: <span>POP</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTA DE PISTAS RESULTANTES (PLAYLIST) -->
+    <section class="playlist-card">
+      <div class="playlist-header">
+        <h3>🎵 PLAYLIST_COMUN (<span id="songCount">0</span> Pistas)</h3>
+        <button class="btn-view-catalog" id="btnToggleCatalog">Ver Catálogo Completo (20)</button>
+      </div>
+
+      <div class="pistas-list" id="pistasContainer">
+        <!-- Generado dinámicamente desde JS -->
+      </div>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
