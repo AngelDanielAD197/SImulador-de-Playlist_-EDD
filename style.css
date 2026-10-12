@@ -1,0 +1,312 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: #0b0d12;
+  color: #e2e8f0;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Header */
+.header-card {
+  background: rgba(18, 22, 31, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.header-info h1 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.status-online {
+  font-size: 11px;
+  color: #00f2fe;
+}
+
+/* Reproductor Principal */
+.player-card {
+  background: rgba(18, 22, 31, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.player-cover {
+  position: relative;
+  height: 180px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(18,22,31,1) 100%),
+              url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80') center/cover;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.btn-toggle-visual {
+  align-self: flex-end;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  color: #00f2fe;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.now-playing-details h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.now-playing-details p {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.player-controls {
+  padding: 16px;
+}
+
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  background: #1e293b;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+}
+
+.control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-ctrl {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.btn-play {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #00f2fe, #b06ab3);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+}
+
+/* Panel de Lógica / DataFest */
+.data-panel-card {
+  background: rgba(18, 22, 31, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.data-panel-card h3 {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.friends-selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.friend-box {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.friend-box h4 {
+  font-size: 11px;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.genres-toggle-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.chip {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #64748b;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip.active {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: #00f2fe;
+  color: #00f2fe;
+}
+
+.bit-vector-display {
+  font-family: monospace;
+  font-size: 11px;
+  color: #b06ab3;
+}
+
+.intersection-action {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-intersect {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  color: white;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.result-badge {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  color: #c084fc;
+}
+
+/* Lista de Pistas */
+.playlist-card {
+  background: rgba(18, 22, 31, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.playlist-header h3 {
+  font-size: 13px;
+  color: #00f2fe;
+}
+
+.btn-view-catalog {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.pistas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pista-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pista-item:hover, .pista-item.active {
+  background: rgba(176, 106, 179, 0.15);
+  border-color: #b06ab3;
+}
+
+.pista-num {
+  font-size: 12px;
+  font-weight: bold;
+  color: #b06ab3;
+  width: 16px;
+}
+
+.pista-info h4 {
+  font-size: 13px;
+  color: #fff;
+}
+
+.pista-info p {
+  font-size: 11px;
+  color: #64748b;
+}
