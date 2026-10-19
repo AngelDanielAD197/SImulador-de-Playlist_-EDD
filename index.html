@@ -1,104 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataFest • Simulador de Playlists</title>
- <link rel="stylesheet" href="style.css?v=2.3">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DanyFest • Simulador Académico Musical</title>
+    
+    <!--Librería Three.js para el fondo espacial de partículas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css?v=14.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="app-container">
-    
-    <!-- ENCABEZADO TERMINAL / DATAFEST -->
-    <header class="header-card">
-      <div class="avatar-circle">🎵</div>
-      <div class="header-info">
-        <h1>DataFest • Playlist Engine</h1>
-        <p class="status-online">● Sistema de Intersección de Conjuntos v2.0</p>
-      </div>
-    </header>
 
-    <!-- TARJETA REPRODUCTOR MULTIMEDIA -->
-    <section class="player-card">
-      <div class="player-cover">
-        <div class="cover-overlay"></div>
-        <button class="btn-toggle-visual" id="btnToggleVisual">👁️ Ocultar Visual</button>
-        <div class="now-playing-details">
-          <h2 id="currentTitle">All The Way Live</h2>
-          <p id="currentArtist">Metro Boomin, Future, Lil Uzi Vert</p>
+    <!--fondo espacial 3D-->
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="danyfest-app-layout">
+        
+        <!-- =========================================================================
+             1. BARRA LATERAL IZQUIERDA
+             ========================================================================= -->
+        <nav class="danyfest-sidebar">
+            <div class="sidebar-top">
+                <div class="nav-icono active" onclick="cambiarPestana('crear')" title="Crear Playlist">➕</div>
+                <div class="nav-icono" onclick="cambiarPestana('inicio')" title="Inicio / Reproductor">🏠</div>
+                <div class="nav-icono" onclick="cambiarPestana('amigos')" title="Sección de Amigos ">👥</div>
+            </div>
+            <div class="sidebar-biblioteca" id="sidebarBiblioteca">
+                <!--Se poblará dinámicamente con las miniaturas de la playlist activa -->
+            </div>
+        </nav>
+
+        <!-- =========================================================================
+             2. PANEL CENTRAL 
+             ========================================================================= -->
+        <main class="danyfest-main-content">
+            
+            <!-- VISTA 1: CREAR PLAYLIST (Activa por defecto al iniciar) -->
+            <div id="vistaCrear" class="vista-seccion" style="display: flex;">
+                <header class="danyfest-top-bar">
+                    <h2>Generador de Playlist Personalizada</h2>
+                    <div class="perfil-usuario-badge">🎵</div>
+                </header>
+
+                <section class="danyfest-hero-card">
+                    <div class="hero-texto">
+                        <span class="badge-tag">MÓDULO DE CREACIÓN</span>
+                        <h3>Configura tu Selección Musical</h3>
+                        <p>Ingresa tu nombre y selecciona las canciones de tu preferencia para registrar tu playlist:</p>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="font-size: 12px; color: #94a3b8; min-width: 110px;">Nombre Playlist:</label>
+                            <input type="text" id="inputNombrePlaylist" placeholder="Ej. Playlist de 'Nombre' " style="flex: 1; background: #0b0f19; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 12px; color: #fff; font-size: 13px;">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; align-items: flex-start;">
+                            <label style="font-size: 12px; color: #94a3b8; min-width: 110px; padding-top: 6px;">Seleccionar Pistas:</label>
+                            <div id="selectorCancionesCatalogo" style="flex: 1; max-height: 140px; overflow-y: auto; background: #0b0f19; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+                                <!-- Se llenará dinámicamente desde JS -->
+                            </div>
+                        </div>
+
+                        <button class="btn-accion" onclick="guardarPlaylistCliente()" style="align-self: flex-end; padding: 8px 16px; margin-top: 4px;">💾 Guardar y Escuchar</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- VISTA 2: INICIO / REPRODUCTOR Y LISTA DE PISTAS -->
+            <div id="vistaInicio" class="vista-seccion" style="display: none;">
+                <header class="danyfest-top-bar">
+                    <div class="perfil-usuario-badge">🎵</div>
+                </header>
+
+                <div class="playlist-header-minimal">
+                    <h1 id="playlistTitleHeader">🎵 PLAYLIST ACTIVA (0 Pistas)</h1>
+                    <p>Festival Virtual DanyFest </p>
+                </div>
+
+                <section class="danyfest-playlist-section">
+                    <div class="lista-pistas" id="listaPistas"></div>
+                </section>
+            </div>
+
+            <!-- VISTA 3: AMIGOS / OPERACIONES LÓGICAS -->
+            <div id="vistaAmigos" class="vista-seccion" style="display: none;">
+                <header class="danyfest-top-bar">
+                    <h2>👥 Sección de Amigos</h2>
+                    <div class="perfil-usuario-badge">⚡</div>
+                </header>
+
+                <section class="danyfest-hero-card">
+                    <div class="hero-texto">
+                        <span class="badge-tag">DANY-FEST</span>
+                        <h3>Playlist Guardadas y Filtros</h3>
+                        <p>Gestiona las playlists registradas y aplica operaciones lógicas:</p>
+                    </div>
+
+                    <!-- 1. Listado de Playlists Guardadas -->
+                    <div id="listaPlaylistsGuardadas" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <!-- Se poblará dinámicamente -->
+                    </div>
+
+                    <!-- 2. Botones de Operaciones Lógicas -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                        <button class="btn-accion" onclick="mostrarSelectorGeneros()" style="background: #3b82f6; font-size: 11px; padding: 6px 12px; cursor: pointer;">🔍 Filtrar por Género</button>
+                        <button class="btn-accion" onclick="ejecutarCancionesEnComun()" style="background: #8b5cf6; font-size: 11px; padding: 6px 12px; cursor: pointer;">🔗 Canciones en Común</button>
+                        <button class="btn-accion" onclick="ejecutarUnionPlaylists()" style="background: #ec4899; font-size: 11px; padding: 6px 12px; cursor: pointer;"> Unión de Playlists </button>
+                    </div>
+
+                    <!-- Contenedor desplegable para el filtro por género -->
+                    <div id="contenedorFiltroGenero" style="display: none; margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;">
+                        <p style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">Selecciona el género para filtrar las playlists guardadas:</p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="botonesGenerosFiltro">
+                            <!-- Se llena por JS -->
+                        </div>
+                    </div>
+
+                    <!-- 3. Resultados de la operación -->
+                    <div style="margin-top: 20px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px;">
+                        <h4 style="font-size: 12px; color: #00f2fe; margin-bottom: 6px;">📊 Resultados de la Operación:</h4>
+                        <div id="contenedorResultadosLogicos" style="font-size: 11.5px; color: #cbd5e1; line-height: 1.4;">
+                            Selecciona una operación arriba para ver las canciones y detalles resultantes.
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+        </main>
+
+        <!-- =========================================================================
+             3. PANEL DERECHO
+             ========================================================================= -->
+        <aside class="danyfest-right-panel">
+            <div class="canvas-hero compact" id="canvasHero">
+                <button class="toggle-visual-btn" id="toggleVisualBtn" onclick="alternarVisualizador()">👁 Mostrar Visual</button>
+
+                <img src="gifs/B.webp" 
+                     onerror="this.src='https://media.giphy.com/media/fdpYd553gEH16/giphy.gif'"
+                     class="canvas-bg-gif" 
+                     id="canvasGif"
+                     alt="Visualizador Multimedia">
+
+                <div class="canvas-overlay">
+                    <div class="track-meta">
+                        <div class="track-title" id="trackTitle">Selecciona una pista</div>
+                        <div class="track-artist" id="trackArtist">DanyFest</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="song-attributes-card">
+                <h3>📊 Atributos de Pista</h3>
+                <div class="attr-grid">
+                    <div class="attr-item"><span>Artista:</span> <b id="attrArtist">-</b></div>
+                    <div class="attr-item"><span>Género:</span> <b id="attrGenre">-</b></div>
+                    <div class="attr-item"><span>Duración:</span> <b id="attrDuration">-</b></div>
+                    <div class="attr-item"><span>Streams:</span> <b id="attrStreams">-</b></div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- =========================================================================
+             4. REPRODUCTOR INFERIOR FIJO
+             ========================================================================= -->
+    <footer class="danyfest-player-footer">
+        <div class="footer-left-meta">
+            <div class="footer-thumb" id="footerThumbIcon">🎵</div>
+            <div class="footer-info">
+                <div id="footerTitle" style="font-size: 13px; font-weight: 600; color: #fff;">Ninguna pista seleccionada</div>
+                <div id="footerArtist" style="font-size: 11px; color: #94a3b8;">DanyFest</div>
+            </div>
         </div>
-      </div>
 
-      <div class="player-controls">
-        <div class="progress-bar-container">
-          <span id="currentTime">0:00</span>
-          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-          <span id="totalTime">4:05</span>
-        </div>
-        <div class="control-buttons">
-          <button class="btn-ctrl" id="btnPrev">⏮️</button>
-          <button class="btn-play" id="btnPlay">▶️</button>
-          <button class="btn-ctrl" id="btnNext">⏭️</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANEL DE LOGICA Y CONJUNTOS (DATA FEST) -->
-    <section class="data-panel-card">
-      <h3>⚡ Filtro de Preferencias (Conjuntos de Bits)</h3>
-      
-      <div class="friends-selectors">
-        <!-- Amigo 1 -->
-        <div class="friend-box">
-          <h4>Pref. Amigo 1</h4>
-          <div class="genres-toggle-group" id="genresAmigo1">
-            <button class="chip active" data-bit="0">ROCK</button>
-            <button class="chip active" data-bit="1">POP</button>
-            <button class="chip" data-bit="2">JAZZ</button>
-            <button class="chip" data-bit="3">ELEC</button>
-            <button class="chip" data-bit="4">REGG</button>
-          </div>
-          <div class="bit-vector-display" id="vectorAmigo1">[ 1, 1, 0, 0, 0 ]</div>
+        <div class="footer-center-controls">
+            <div class="player-controls">
+                <button class="ctrl-btn" onclick="pistaAnterior()" title="Anterior">⏮</button>
+                <button class="play-main-btn" id="playBtn" onclick="alternarReproduccion()" title="Reproducir / Pausar">▶</button>
+                <button class="ctrl-btn" onclick="pistaSiguiente()" title="Siguiente">⏭</button>
+            </div>
+            <div class="progress-bar-container">
+                <span id="currentTime">0:00</span>
+                <input type="range" id="seekBar" class="seek-bar" value="0" min="0" max="100">
+                <span id="duration">0:00</span>
+            </div>
         </div>
 
-        <!-- Amigo 2 -->
-        <div class="friend-box">
-          <h4>Pref. Amigo 2</h4>
-          <div class="genres-toggle-group" id="genresAmigo2">
-            <button class="chip" data-bit="0">ROCK</button>
-            <button class="chip active" data-bit="1">POP</button>
-            <button class="chip active" data-bit="2">JAZZ</button>
-            <button class="chip active" data-bit="3">ELEC</button>
-            <button class="chip" data-bit="4">REGG</button>
-          </div>
-          <div class="bit-vector-display" id="vectorAmigo2">[ 0, 1, 1, 1, 0 ]</div>
-        </div>
-      </div>
+        <div class="footer-right-extra"></div>
 
-      <!-- BOTON INTERSECCION Y RESULTADO -->
-      <div class="intersection-action">
-        <button class="btn-intersect" id="btnIntersect">⚡ Ejecutar Intersección (*)</button>
-        <div class="result-badge" id="resultGenres">
-          Géneros en común: <span>POP</span>
-        </div>
-      </div>
-    </section>
+        <audio id="localAudio" preload="metadata"></audio>
+    </footer>
 
-    <!-- LISTA DE PISTAS RESULTANTES (PLAYLIST) -->
-    <section class="playlist-card">
-      <div class="playlist-header">
-        <h3>🎵 PLAYLIST_COMUN (<span id="songCount">0</span> Pistas)</h3>
-        <button class="btn-view-catalog" id="btnToggleCatalog">Ver Catálogo Completo (20)</button>
-      </div>
-
-      <div class="pistas-list" id="pistasContainer">
-        <!-- Generado dinámicamente desde JS -->
-      </div>
-    </section>
-
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

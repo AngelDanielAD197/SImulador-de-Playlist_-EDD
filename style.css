@@ -3,216 +3,237 @@
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  user-select: none;
 }
 
-body {
-  background-color: #0b0d12;
-  color: #e2e8f0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 24px;
-  min-height: 100vh;
-}
-
-/* Contenedor Base (Móvil) */
-.app-container {
+body, html {
   width: 100%;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* ==========================================
-   DISEÑO PARA COMPUTADORAS (Escritorio)
-   ========================================== */
-@media (min-width: 900px) {
-  .app-container {
-    max-width: 1200px;
-    display: grid;
-    grid-template-columns: 440px 1fr; /* Columna izquierda fija, derecha flexible */
-    gap: 20px;
-    align-items: start;
-  }
-
-  /* Agrupamos la columna izquierda en un contenedor virtual o grid span */
-  .header-card {
-    grid-column: 1;
-  }
-}
-
-/* Estilos comunes de tarjetas */
-.header-card, .player-card, .data-panel-card, .playlist-card {
-  background: rgba(18, 22, 31, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* Header */
-.header-card {
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.avatar-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #00f2fe, #4facfe);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.header-info h1 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.status-online {
-  font-size: 12px;
-  color: #00f2fe;
-}
-
-/* Reproductor Principal */
-.player-card {
-  overflow: hidden;
-}
-
-.player-cover {
-  position: relative;
-  height: 180px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(18,22,31,1) 100%),
-              url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80') center/cover;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.btn-toggle-visual {
-  align-self: flex-end;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 242, 254, 0.4);
-  color: #00f2fe;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.now-playing-details h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.now-playing-details p {
-  font-size: 13px;
-  color: #94a3b8;
-}
-
-.player-controls {
-  padding: 16px;
-}
-
-.progress-bar-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px;
-  color: #64748b;
-  margin-bottom: 12px;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 4px;
-  background: #1e293b;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  width: 30%;
   height: 100%;
-  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  overflow: hidden;
+  background: #020205 !important;
+  color: #e2e8f0;
 }
 
-.control-buttons {
+/* Canvas 3D de Three.js */
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Layout Principal DanyFest (3 Columnas) */
+.danyfest-app-layout {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 85px 1fr 360px;
+  gap: 12px;
+  padding: 12px 12px 0 12px;
+  width: 100vw;
+  height: calc(100vh - 85px);
+  background: transparent !important;
+  isolation: isolate;
+}
+
+/* =========================================================================
+   1. BARRA LATERAL IZQUIERDA
+   ========================================================================= */
+.danyfest-sidebar {
+  background: rgba(15, 20, 32, 0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  padding: 16px 8px;
+  gap: 16px;
+  height: 100%;
+  overflow: hidden;
+  will-change: transform;
 }
 
-.btn-ctrl {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.btn-play {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #00f2fe, #b06ab3);
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-}
-
-/* Panel de Lógica / DataFest */
-.data-panel-card {
-  padding: 18px;
-}
-
-.data-panel-card h3 {
-  font-size: 13px;
-  color: #94a3b8;
-  margin-bottom: 12px;
-}
-
-.friends-selectors {
+.sidebar-top {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex-shrink: 0;
 }
 
-.friend-box {
-  background: rgba(255, 255, 255, 0.03);
-  padding: 12px;
-  border-radius: 12px;
-}
-
-.friend-box h4 {
-  font-size: 11px;
-  color: #cbd5e1;
-  margin-bottom: 8px;
-}
-
-.genres-toggle-group {
+.nav-icono {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+}
+
+.nav-icono:hover, .nav-icono.active {
+  background: rgba(0, 242, 254, 0.25);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+  color: #00f2fe;
+}
+
+.sidebar-biblioteca {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  overflow-y: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-biblioteca::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-biblioteca::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.lib-mini-card {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.lib-mini-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lib-mini-card:hover, .lib-mini-card.active {
+  transform: scale(1.08);
+  border-color: #00f2fe;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+}
+
+/* =========================================================================
+   2. PANEL CENTRAL
+   ========================================================================= */
+.danyfest-main-content {
+  background: rgba(15, 20, 32, 0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+  gap: 16px;
+  height: 100%;
+  will-change: transform;
+}
+
+.danyfest-main-content::-webkit-scrollbar {
+  width: 6px;
+}
+.danyfest-main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.vista-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  background: transparent !important;
+}
+
+.danyfest-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.perfil-usuario-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00f2fe, #ff0080);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.playlist-header-minimal {
+  padding: 10px 0 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.playlist-header-minimal h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #00f2fe;
+}
+
+.playlist-header-minimal p {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.danyfest-hero-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.badge-tag {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ff0080;
+  font-weight: 700;
+}
+
+.hero-texto h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  margin: 4px 0 6px 0;
+}
+
+.hero-texto p {
+  font-size: 11.5px;
+  color: #cbd5e1;
+  line-height: 1.4;
+  margin-bottom: 14px;
 }
 
 .chip {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #64748b;
-  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  padding: 6px 12px;
   border-radius: 12px;
   font-size: 10px;
   font-weight: 600;
@@ -222,143 +243,346 @@ body {
 
 .chip:hover {
   border-color: #00f2fe;
+  color: #fff;
+  background: rgba(0, 242, 254, 0.15);
 }
 
 .chip.active {
-  background: rgba(0, 242, 254, 0.15);
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%) !important;
   border-color: #00f2fe;
-  color: #00f2fe;
+  color: #0b0f19 !important;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
 }
 
-.bit-vector-display {
-  font-family: monospace;
-  font-size: 11px;
-  color: #b06ab3;
-}
-
-.intersection-action {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.btn-intersect {
-  width: 100%;
-  padding: 11px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+.btn-accion {
+  padding: 8px 16px;
+  border-radius: 20px !important;
+  border: none !important;
+  background: linear-gradient(90deg, #00f2fe, #ff0080);
   color: white;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11.5px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-.btn-intersect:hover {
-  opacity: 0.9;
+.btn-accion:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
 }
 
-.result-badge {
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  padding: 9px 12px;
-  border-radius: 10px;
-  font-size: 12px;
-  text-align: center;
-  color: #c084fc;
-}
-
-/* Lista de Pistas (En Desktop se posiciona limpiamente en la columna derecha) */
-.playlist-card {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-@media (min-width: 900px) {
-  .playlist-card {
-    grid-column: 2;
-    grid-row: 1 / span 4; /* Ocupa toda la altura de la columna derecha */
-    height: calc(100vh - 48px);
-  }
-}
-
-.playlist-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.playlist-header h3 {
-  font-size: 14px;
-  color: #00f2fe;
-}
-
-.btn-view-catalog {
-  background: none;
-  border: none;
-  color: #64748b;
-  font-size: 11px;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.pistas-list {
+.danyfest-playlist-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  overflow-y: auto;
-  max-height: calc(100vh - 140px);
-  padding-right: 4px;
 }
 
-.pistas-list::-webkit-scrollbar {
-  width: 6px;
-}
-.pistas-list::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 3px;
+.lista-pistas {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.pista-item {
+.track-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.pista-item:hover, .pista-item.active {
-  background: rgba(176, 106, 179, 0.15);
-  border-color: #b06ab3;
+.track-item:hover, .track-item.active {
+  background: rgba(0, 242, 254, 0.18) !important;
+  border-color: rgba(0, 242, 254, 0.5);
+  transform: translateY(-1px);
 }
 
-.pista-num {
-  font-size: 12px;
+.item-num {
+  font-size: 11px;
+  color: #94a3b8;
+  font-family: monospace;
+  width: 18px;
+}
+
+.track-item.active .item-num {
+  color: #00f2fe;
   font-weight: bold;
-  color: #b06ab3;
-  width: 20px;
-  text-align: center;
 }
 
-.pista-info {
+.item-info {
   flex: 1;
 }
 
-.pista-info h4 {
+.item-name {
   font-size: 13px;
+  font-weight: 700;
   color: #fff;
-  margin-bottom: 2px;
 }
 
-.pista-info p {
+.item-artist {
   font-size: 11px;
-  color: #64748b;
+  color: #cbd5e1;
+  margin-top: 2px;
+}
+
+/* =========================================================================
+   3. PANEL DERECHO
+   ========================================================================= */
+.danyfest-right-panel {
+  background: rgba(15, 20, 32, 0.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 12px;
+  gap: 12px;
+  height: 100%;
+  will-change: transform;
+}
+
+.danyfest-right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.danyfest-right-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.canvas-hero {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: height 0.3s ease;
+}
+
+.canvas-hero.compact {
+  height: 90px;
+}
+
+.canvas-bg-gif {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  filter: brightness(0.9);
+  transition: opacity 0.3s ease;
+}
+
+.canvas-hero.compact .canvas-bg-gif {
+  opacity: 0;
+}
+
+.toggle-visual-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  color: #00f2fe;
+  font-size: 9.5px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+.canvas-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 20%, rgba(1,0,5,0.85) 100%);
+  z-index: 2;
+  padding: 14px;
+}
+
+.track-meta .track-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+.track-meta .track-artist {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 2px;
+}
+
+.song-attributes-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.song-attributes-card h3 {
+  font-size: 11px;
+  color: #00f2fe;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.attr-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attr-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.attr-item span {
+  color: #94a3b8;
+}
+
+.attr-item b {
+  color: #e2e8f0;
+}
+
+/* =========================================================================
+   4. REPRODUCTOR INFERIOR FIJO
+   ========================================================================= */
+.danyfest-player-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 70px;
+  background: rgba(8, 11, 18, 0.85) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+}
+
+.footer-left-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.footer-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #000;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.footer-center-controls {
+  flex: 1;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 auto;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.ctrl-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ctrl-btn:hover {
+  color: #00f2fe;
+}
+
+.play-main-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00f2fe, #ff0080);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.play-main-btn:hover {
+  transform: scale(1.08);
+}
+
+.progress-bar-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: monospace;
+}
+
+.seek-bar {
+  flex: 1;
+  accent-color: #00f2fe;
+  height: 4px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.footer-right-extra {
+  width: 280px;
+  flex-shrink: 0;
 }
